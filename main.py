@@ -35,14 +35,14 @@ TRAIN_SIZE = 20  # Tamanho dos trens
 
 # Classe para representar um trem
 class Train:
-    def __init__(self, name, route, color, speed):
+    def __init__(self, name, route, color, speed,x_start,y_start):
         self.name = name
         self.route = route
         self.color = color
         self.speed = speed
         self.position = 0
-        self.x, self.y = route[0]  # Posição inicial do trem
-        self.xStart, self.yStart = route[0]  # Ponto inicial do percurso
+        self.x, self.y = x_start,y_start  # Posição inicial do trem
+        self.xStart, self.yStart = x_start,y_start  # Ponto inicial do percurso
         self.xEnd, self.yEnd = route[-1]  # Ponto final do percurso
         self.mutex = threading.Lock()
 
@@ -62,70 +62,65 @@ class Train:
 
     def test(self):
         if self.name == "Trem1":
-            if self.x == 400 and self.y == 200 - TRAIN_SIZE: #L3
-                semaforo_1.acquire()
-                mutex1.acquire()
-            if self.x == 250 + TRAIN_SIZE and self.y == 200: #L4
+            if self.x == 400 and self.y == 200: #L3
+                #semaforo_1.acquire()
                 mutex2.acquire()
-                semaforo_1.release()
-                if mutex1.locked():
-                    mutex1.release()
+                mutex1.acquire()
+            if self.x == 250 and self.y == 200: #L4
+                
+                #semaforo_1.release()
+                #if mutex1.locked():
+                mutex1.release()
             if self.x == 100 and self.y == 200:#L5
                 if mutex2.locked():   
                     mutex2.release()
 
     
         if self.name == "Trem2": 
-            if self.x == 100 and self.y == 200 + TRAIN_SIZE: #L5
-                semaforo_1.acquire()
-                mutex5.acquire()
+            if self.x == 100 and self.y == 200: #L5
+            
+                if not mutex2.locked():
+                    mutex2.acquire()
+
+            if self.x ==250 and self.y == 200: #L7
                 mutex3.acquire()
-                mutex2.acquire()
-            if self.x ==250 - TRAIN_SIZE and self.y == 200: #L7
-                
-                semaforo_2.acquire()
-                semaforo_1.release()
                 if mutex2.locked():
                     mutex2.release()
-            if self.x == 250 and self.y == 300 - TRAIN_SIZE: #L8
+                 
+            if self.x == 250 and self.y == 300: #L8
                 mutex4.acquire()
-                if mutex5.locked():
-                    mutex5.release() 
-                if mutex3.locked():
-                    mutex3.release()
-                
+                mutex3.release()
             if self.x == 100 and self.y == 300:
-                semaforo_2.release()
-                if mutex4.locked():
+                if mutex4.locked():    
                     mutex4.release()
         
         if self.name == "Trem3":
-            if self.x == 400 and self.y == 300 - TRAIN_SIZE:
-                semaforo_2.acquire()
+            if self.x == 400 and self.y == 300:
+               
                 mutex5.acquire()
-            if self.x == 250 + TRAIN_SIZE and self.y == 300:
-                semaforo_1.acquire()
-                mutex1.acquire()
+            if self.x == 250 and self.y == 300:
+                
                 mutex3.acquire()
-                semaforo_2.release()
                 if mutex5.locked():
                     mutex5.release()
-            if self.x == 250 and self.y == 200 + TRAIN_SIZE:   
-                
-                if mutex3.locked():
+            if self.x == 250 and self.y == 200:   
+                if not mutex1.locked():
+                    mutex1.acquire()
+                if mutex3.locked():        
                     mutex3.release()
             if self.x == 400 and self.y == 200:
-                semaforo_1.release()
                 if mutex1.locked():
                     mutex1.release()
         
         if self.name == "Trem4":
-            if self.x == 100 and self.y == 300 + TRAIN_SIZE:
-                semaforo_2.acquire()
-                mutex4.acquire()
-            if self.x == 250 - TRAIN_SIZE and self.y ==300:
+            if self.x == 100 and self.y == 300:
+                #semaforo_2.acquire()
                 mutex5.acquire()
-                semaforo_2.release()
+                if not mutex4.locked():
+                    mutex4.acquire()
+            if self.x == 250  and self.y ==300:
+                #mutex5.acquire()
+                #semaforo_2.release()
                 if mutex4.locked():
                     mutex4.release()
             if self.x == 400 and self.y == 300:
@@ -190,10 +185,13 @@ def main():
     route_trem4 = [(100, 300), (100, 300), (400, 300), (400, 400)]
 
     # Inicializando os trens
-    train1 = Train("Trem1", route_trem1, GREEN, 27)
-    train2 = Train("Trem2", route_trem2, YELLOW, 25)
-    train3 = Train("Trem3", route_trem3, BLUE, 26)
-    train4 = Train("Trem4", route_trem4, RED, 20)
+    train1 = Train("Trem1", route_trem1, GREEN, 27,100,100)
+    train2 = Train("Trem2", route_trem2, YELLOW, 25,100,200)
+    train3 = Train("Trem3", route_trem3, BLUE, 26,250,200)
+    train4 = Train("Trem4", route_trem4, RED, 20,100,300)
+    #mutex1.acquire()
+    #mutex2.acquire()
+    #mutex4.acquire()
 
     # Criando threads para os trens
     thread_train1 = threading.Thread(target=train1.run)
