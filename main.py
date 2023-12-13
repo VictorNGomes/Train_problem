@@ -22,6 +22,7 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
+YELLOW = (255,255,0)
 
 # Configurações da janela
 width, height = 800, 600
@@ -61,10 +62,10 @@ class Train:
 
     def test(self):
         if self.name == "Trem1":
-            if self.x == 400 and self.y == 200: #L3
+            if self.x == 400 and self.y == 200 - TRAIN_SIZE: #L3
                 semaforo_1.acquire()
                 mutex1.acquire()
-            if self.x == 260 and self.y == 200: #L4
+            if self.x == 250 + TRAIN_SIZE and self.y == 200: #L4
                 mutex2.acquire()
                 semaforo_1.release()
                 if mutex1.locked():
@@ -75,36 +76,42 @@ class Train:
 
     
         if self.name == "Trem2": 
-            if self.x == 100 and self.y == 200:
+            if self.x == 100 and self.y == 200 + TRAIN_SIZE: #L5
                 semaforo_1.acquire()
-                mutex2.acquire()
-            if self.x ==250 and self.y == 200:
+                mutex5.acquire()
                 mutex3.acquire()
+                mutex2.acquire()
+            if self.x ==250 - TRAIN_SIZE and self.y == 200: #L7
+                
+                semaforo_2.acquire()
                 semaforo_1.release()
                 if mutex2.locked():
                     mutex2.release()
-            if self.x == 250 and self.y == 300:
-                semaforo_2.acquire()
+            if self.x == 250 and self.y == 300 - TRAIN_SIZE: #L8
                 mutex4.acquire()
+                if mutex5.locked():
+                    mutex5.release() 
                 if mutex3.locked():
                     mutex3.release()
+                
             if self.x == 100 and self.y == 300:
                 semaforo_2.release()
                 if mutex4.locked():
                     mutex4.release()
         
         if self.name == "Trem3":
-            if self.x == 400 and self.y == 300:
+            if self.x == 400 and self.y == 300 - TRAIN_SIZE:
                 semaforo_2.acquire()
                 mutex5.acquire()
-            if self.x == 250 and self.y == 300:
+            if self.x == 250 + TRAIN_SIZE and self.y == 300:
+                semaforo_1.acquire()
+                mutex1.acquire()
                 mutex3.acquire()
                 semaforo_2.release()
                 if mutex5.locked():
                     mutex5.release()
-            if self.x == 250 and self.y == 200:
-                semaforo_1.acquire()
-                mutex1.acquire()
+            if self.x == 250 and self.y == 200 + TRAIN_SIZE:   
+                
                 if mutex3.locked():
                     mutex3.release()
             if self.x == 400 and self.y == 200:
@@ -113,10 +120,10 @@ class Train:
                     mutex1.release()
         
         if self.name == "Trem4":
-            if self.x == 100 and self.y == 300:
+            if self.x == 100 and self.y == 300 + TRAIN_SIZE:
                 semaforo_2.acquire()
                 mutex4.acquire()
-            if self.x == 250 and self.y ==300:
+            if self.x == 250 - TRAIN_SIZE and self.y ==300:
                 mutex5.acquire()
                 semaforo_2.release()
                 if mutex4.locked():
@@ -147,9 +154,9 @@ def draw_trains(trains):
     #    pygame.draw.lines(screen, WHITE, False, [trains[0].route[i], trains[0].route[i + 1]], 2)
     #pygame.draw.lines(screen, WHITE, False, [trains[0].route[-1], trains[0].route[0]], 2)
     for i in range(len(trains[0].route) - 1):
-        pygame.draw.lines(screen, WHITE, False, trains[i].route, 2)
+        pygame.draw.lines(screen, WHITE, False, trains[i].route, 20)
 
-    pygame.draw.lines(screen, WHITE, False, [(100, 100),(100,300),(400,300),(400,400),(100,400),(100,300)], 2)
+    pygame.draw.lines(screen, WHITE, False, [(100, 100),(100,300),(400,300),(400,400),(100,400),(100,300)], 20)
 
     # Desenhar trens
     for train in trains:
@@ -184,7 +191,7 @@ def main():
 
     # Inicializando os trens
     train1 = Train("Trem1", route_trem1, GREEN, 27)
-    train2 = Train("Trem2", route_trem2, WHITE, 25)
+    train2 = Train("Trem2", route_trem2, YELLOW, 25)
     train3 = Train("Trem3", route_trem3, BLUE, 26)
     train4 = Train("Trem4", route_trem4, RED, 20)
 
