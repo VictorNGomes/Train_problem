@@ -67,7 +67,6 @@ class Train:
                 mutex2.acquire()
                 mutex1.acquire()
             if self.x == 250 and self.y == 200: #L4
-                
                 #semaforo_1.release()
                 #if mutex1.locked():
                 mutex1.release()
@@ -78,15 +77,12 @@ class Train:
     
         if self.name == "Trem2": 
             if self.x == 100 and self.y == 200: #L5
-            
-                if not mutex2.locked():
-                    mutex2.acquire()
-
+                #if not mutex2.locked():
+                mutex2.acquire()
             if self.x ==250 and self.y == 200: #L7
                 mutex3.acquire()
                 if mutex2.locked():
                     mutex2.release()
-                 
             if self.x == 250 and self.y == 300: #L8
                 mutex4.acquire()
                 mutex3.release()
@@ -96,16 +92,14 @@ class Train:
         
         if self.name == "Trem3":
             if self.x == 400 and self.y == 300:
-               
                 mutex5.acquire()
             if self.x == 250 and self.y == 300:
-                
                 mutex3.acquire()
                 if mutex5.locked():
                     mutex5.release()
             if self.x == 250 and self.y == 200:   
-                if not mutex1.locked():
-                    mutex1.acquire()
+                #if not mutex1.locked():
+                mutex1.acquire()
                 if mutex3.locked():        
                     mutex3.release()
             if self.x == 400 and self.y == 200:
@@ -116,8 +110,8 @@ class Train:
             if self.x == 100 and self.y == 300:
                 #semaforo_2.acquire()
                 mutex5.acquire()
-                if not mutex4.locked():
-                    mutex4.acquire()
+                #if not mutex4.locked():
+                mutex4.acquire()
             if self.x == 250  and self.y ==300:
                 #mutex5.acquire()
                 #semaforo_2.release()
